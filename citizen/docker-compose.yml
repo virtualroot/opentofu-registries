@@ -1,0 +1,26 @@
+version: '3'
+
+name: citizen
+
+services:
+  server:
+    image: ghcr.io/outsideris/citizen:0.6.0
+    command: /bin/bash -c "/server.sh"
+    ports:
+      - "3000:3000"
+    environment:
+      CITIZEN_DATABASE_TYPE: "sqlite"
+      CITIZEN_DATABASE_URL: "file:/citizen.db"
+      CITIZEN_STORAGE: "file"
+      CITIZEN_STORAGE_PATH: "/storage"
+    volumes:
+      - "${PWD}/server.sh:/server.sh:ro"
+  client:
+    image: ghcr.io/outsideris/citizen:0.6.0
+    tty: true
+    stdin_open: true
+    environment:
+      CITIZEN_DATABASE_TYPE: "sqlite"
+      CITIZEN_ADDR: "http://server:3000/"
+    volumes:
+      - "./dummy-module:/citizen:ro"
